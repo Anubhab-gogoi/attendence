@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Research Scholar Attendance</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #333;
+      color: #fff;
+    }
+    select {
+      padding: 5px;
+      border-radius: 5px;
+      border: 1px solid #999;
+    }
+    .share-link {
+      margin-top: 20px;
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Research Scholar Attendance</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Current Location</th>
+      </tr>
+    </thead>
+    <tbody id="attendanceTable">
+      <!-- Rows will be added by JavaScript -->
+    </tbody>
+  </table>
+
+  <div class="share-link">
+    <button onclick="copyLink()">Copy Shareable URL</button>
+    <p id="copiedMsg" style="color:green; display:none;">Link copied!</p>
+  </div>
+
+  <script>
+    const scholars = [
+      "Biprav Chetry",
+      "Chunuranjan Dutta",
+      "Nituraj Changmai",
+      "Suchibrata Saikia",
+      "Takio Yagin",
+      "Anubhab Parashar Gogoi"
+    ];
+
+    const locations = [
+      "APN LAB-1",
+      "APN LAB-2 (MRL)",
+      "LIBRARY",
+      "CANTEEN",
+      "OTHERS",
+      "HOSTEL"
+    ];
+
+    const tableBody = document.getElementById("attendanceTable");
+
+    function loadAttendance() {
+      const savedData = JSON.parse(localStorage.getItem("attendance")) || {};
+      scholars.forEach(name => {
+        const row = document.createElement("tr");
+
+        const nameCell = document.createElement("td");
+        nameCell.textContent = name;
+
+        const locationCell = document.createElement("td");
+        const select = document.createElement("select");
+
+        locations.forEach(loc => {
+          const option = document.createElement("option");
+          option.value = loc;
+          option.textContent = loc;
+          if (savedData[name] === loc) {
+            option.selected = true;
+          }
+          select.appendChild(option);
+        });
+
+        select.addEventListener("change", () => {
+          savedData[name] = select.value;
+          localStorage.setItem("attendance", JSON.stringify(savedData));
+        });
+
+        locationCell.appendChild(select);
+        row.appendChild(nameCell);
+        row.appendChild(locationCell);
+        tableBody.appendChild(row);
+      });
+    }
+
+    function copyLink() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        document.getElementById("copiedMsg").style.display = "block";
+        setTimeout(() => {
+          document.getElementById("copiedMsg").style.display = "none";
+        }, 2000);
+      });
+    }
+
+    loadAttendance();
+  </script>
+</body>
+</html>
